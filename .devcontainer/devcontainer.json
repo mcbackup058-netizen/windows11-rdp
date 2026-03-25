@@ -1,0 +1,97 @@
+{
+  "name": "Windows 11 RDP Development",
+  "description": "Development environment for Windows 11 Pro RDP Docker project",
+
+  // Use Docker-outside-of-Docker to access host Docker
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+
+  // Features to install
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "moby": true
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": false,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
+  },
+
+  // VS Code extensions
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools",
+        "eamodio.gitlens",
+        "editorconfig.editorconfig",
+        "ms-vscode.remote-repositories",
+        "GitHub.vscode-pull-request-github"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "files.eol": "\n",
+        "files.trimTrailingWhitespace": true,
+        "[shellscript]": {
+          "editor.tabSize": 2,
+          "editor.defaultFormatter": "foxundermoon.vs-shell-format"
+        },
+        "[dockerfile]": {
+          "editor.tabSize": 2,
+          "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+        },
+        "[yaml]": {
+          "editor.tabSize": 2,
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "docker.showStartPage": false
+      }
+    }
+  },
+
+  // Forward RDP port
+  "forwardPorts": [3389],
+
+  // Port labels
+  "portsAttributes": {
+    "3389": {
+      "label": "RDP",
+      "description": "Remote Desktop Protocol for Windows 11",
+      "onAutoForward": "silent"
+    }
+  },
+
+  // Environment variables
+  "remoteEnv": {
+    "RAM_SIZE": "${localEnv:RAM_SIZE:-4G}",
+    "CPU_CORES": "${localEnv:CPU_CORES:-2}",
+    "DISK_SIZE": "${localEnv:DISK_SIZE:-64G}"
+  },
+
+  // Run commands after container creation
+  "postCreateCommand": "docker --version && docker compose version",
+
+  // Mount Docker socket for Docker-outside-of-Docker
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  // Lifecycle scripts
+  "postStartCommand": "echo '🚀 Windows 11 RDP Development Environment Ready!'",
+
+  // User settings
+  "remoteUser": "vscode",
+
+  // Workspace folder
+  "workspaceFolder": "/workspaces/windows11-rdp",
+
+  // Run as root for Docker access (optional)
+  "overrideCommand": false
+}
