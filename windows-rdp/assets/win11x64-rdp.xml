@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Windows 11 Pro - RDP Only Edition
+    Auto-installation answer file
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+
+    <!-- Windows PE Phase -->
+    <settings pass="windowsPE">
+        <!-- Language Settings -->
+        <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <SetupUILanguage>
+                <UILanguage>en-US</UILanguage>
+            </SetupUILanguage>
+            <InputLocale>0409:00000409</InputLocale>
+            <SystemLocale>en-US</SystemLocale>
+            <UILanguage>en-US</UILanguage>
+            <UserLocale>en-US</UserLocale>
+        </component>
+
+        <!-- Disk Configuration -->
+        <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <DiskConfiguration>
+                <Disk wcm:action="add">
+                    <DiskID>0</DiskID>
+                    <WillWipeDisk>true</WillWipeDisk>
+                    <CreatePartitions>
+                        <!-- EFI System Partition -->
+                        <CreatePartition wcm:action="add">
+                            <Order>1</Order>
+                            <Type>EFI</Type>
+                            <Size>300</Size>
+                        </CreatePartition>
+                        <!-- MSR Partition -->
+                        <CreatePartition wcm:action="add">
+                            <Order>2</Order>
+                            <Type>MSR</Type>
+                            <Size>128</Size>
+                        </CreatePartition>
+                        <!-- Windows Partition -->
+                        <CreatePartition wcm:action="add">
+                            <Order>3</Order>
+                            <Type>Primary</Type>
+                            <Extend>true</Extend>
+                        </CreatePartition>
+                    </CreatePartitions>
+                    <ModifyPartitions>
+                        <ModifyPartition wcm:action="add">
+                            <Order>1</Order>
+                            <PartitionID>1</PartitionID>
+                            <Label>System</Label>
+                            <Format>FAT32</Format>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>2</Order>
+                            <PartitionID>2</PartitionID>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>3</Order>
+                            <PartitionID>3</PartitionID>
+                            <Label>Windows</Label>
+                            <Letter>C</Letter>
+                            <Format>NTFS</Format>
+                        </ModifyPartition>
+                    </ModifyPartitions>
+                </Disk>
+            </DiskConfiguration>
+
+            <!-- Image Installation -->
+            <ImageInstall>
+                <OSImage>
+                    <InstallTo>
+                        <DiskID>0</DiskID>
+                        <PartitionID>3</PartitionID>
+                    </InstallTo>
+                    <InstallToAvailablePartition>false</InstallToAvailablePartition>
+                </OSImage>
+            </ImageInstall>
+
+            <!-- User Data -->
+            <UserData>
+                <AcceptEula>true</AcceptEula>
+                <FullName>Docker</FullName>
+                <Organization>Windows 11 RDP</Organization>
+                <ProductKey>
+                    <!-- Windows 11 Pro Generic Key (for installation only) -->
+                    <Key>VK7JG-NPHTM-C97JM-9MPGT-3V66T</Key>
+                </ProductKey>
+            </UserData>
+
+            <!-- Bypass Windows 11 Requirements -->
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassTPMCheck /t REG_DWORD /d 1 /f</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassSecureBootCheck /t REG_DWORD /d 1 /f</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>3</Order>
+                    <Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassRAMCheck /t REG_DWORD /d 1 /f</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>4</Order>
+                    <Path>reg.exe add "HKLM\SYSTEM\Setup\MoSetup" /v AllowUpgradesWithUnsupportedTPMOrCPU /t REG_DWORD /d 1 /f</Path>
+                </RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
+    </settings>
+
+    <!-- Offline Servicing -->
+    <settings pass="offlineServicing">
+        <component name="Microsoft-Windows-LUA-Settings" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <EnableLUA>false</EnableLUA>
+        </component>
+    </settings>
+
+    <!-- Specialize Phase -->
+    <settings pass="specialize">
+        <!-- Disable Auto Activation -->
+        <component name="Microsoft-Windows-Security-SPP-UX" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <SkipAutoActivation>true</SkipAutoActivation>
+        </component>
+
+        <!-- Shell Setup -->
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <ComputerName>WIN11-RDP</ComputerName>
+            <TimeZone>UTC</TimeZone>
+        </component>
+
+        <!-- RDP Configuration -->
+        <component name="Microsoft-Windows-TerminalServices-LocalSessionManager" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <fDenyTSConnections>false</fDenyTSConnections>
+        </component>
+
+        <component name="Microsoft-Windows-TerminalServices-RDP-WinStationExtensions" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <UserAuthentication>0</UserAuthentication>
+        </component>
+
+        <!-- Firewall for RDP -->
+        <component name="Networking-MPSSVC-Svc" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <FirewallGroups>
+                <FirewallGroup wcm:action="add" wcm:keyValue="RemoteDesktop">
+                    <Active>true</Active>
+                    <Profile>all</Profile>
+                    <Group>@FirewallAPI.dll,-28752</Group>
+                </FirewallGroup>
+            </FirewallGroups>
+        </component>
+
+        <!-- Deployment Commands -->
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <RunSynchronous>
+                <!-- Skip OOBE Network Screen -->
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f</Path>
+                </RunSynchronousCommand>
+                <!-- Set Network to Private -->
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <Path>reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\FirstNetwork" /v Category /t REG_DWORD /d 1 /f</Path>
+                </RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
+    </settings>
+
+    <!-- OOBE System Phase -->
+    <settings pass="oobeSystem">
+        <!-- Disable Device Encryption -->
+        <component name="Microsoft-Windows-SecureStartup-FilterDriver" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <PreventDeviceEncryption>true</PreventDeviceEncryption>
+        </component>
+
+        <!-- Shell Setup for OOBE -->
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <!-- User Accounts -->
+            <UserAccounts>
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Name>Docker</Name>
+                        <DisplayName>Docker</DisplayName>
+                        <Group>Administrators</Group>
+                        <Password>
+                            <Value>YQBkAG0AaQBuAFAAYQBzAHMAdwBvAHIAZAA=</Value>
+                            <PlainText>false</PlainText>
+                        </Password>
+                    </LocalAccount>
+                </LocalAccounts>
+                <AdministratorPassword>
+                    <Value>YQBkAG0AaQBuAEEAZABtAGkAbgBpAHMAdAByAGEAdABvAHIAUABhAHMAcwB3AG8AcgBkAA==</Value>
+                    <PlainText>false</PlainText>
+                </AdministratorPassword>
+            </UserAccounts>
+
+            <!-- Auto Logon -->
+            <AutoLogon>
+                <Username>Docker</Username>
+                <Enabled>true</Enabled>
+                <LogonCount>9999</LogonCount>
+                <Password>
+                    <Value>YQBkAG0AaQBuAFAAYQBzAHMAdwBvAHIAZAA=</Value>
+                    <PlainText>false</PlainText>
+                </Password>
+            </AutoLogon>
+
+            <!-- Display Settings -->
+            <Display>
+                <ColorDepth>32</ColorDepth>
+                <HorizontalResolution>1920</HorizontalResolution>
+                <VerticalResolution>1080</VerticalResolution>
+            </Display>
+
+            <!-- OOBE Settings -->
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+                <NetworkLocation>Work</NetworkLocation>
+                <ProtectYourPC>3</ProtectYourPC>
+                <SkipUserOOBE>true</SkipUserOOBE>
+                <SkipMachineOOBE>true</SkipMachineOOBE>
+            </OOBE>
+
+            <!-- First Logon Commands -->
+            <FirstLogonCommands>
+                <!-- Enable RDP -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <CommandLine>reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f</CommandLine>
+                    <Description>Enable RDP</Description>
+                </SynchronousCommand>
+
+                <!-- Disable Password Expiry -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <CommandLine>powershell.exe -Command "Set-LocalUser -Name 'Docker' -PasswordNeverExpires $true"</CommandLine>
+                    <Description>Disable password expiry</Description>
+                </SynchronousCommand>
+
+                <!-- Disable Hibernate -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>3</Order>
+                    <CommandLine>powercfg.exe /hibernate off</CommandLine>
+                    <Description>Disable hibernation</Description>
+                </SynchronousCommand>
+
+                <!-- Disable Sleep -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>4</Order>
+                    <CommandLine>powercfg.exe /change standby-timeout-ac 0</CommandLine>
+                    <Description>Disable sleep</Description>
+                </SynchronousCommand>
+
+                <!-- Disable Monitor Timeout -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>5</Order>
+                    <CommandLine>powercfg.exe /change monitor-timeout-ac 0</CommandLine>
+                    <Description>Disable monitor timeout</Description>
+                </SynchronousCommand>
+
+                <!-- Enable Network Discovery -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>6</Order>
+                    <CommandLine>netsh.exe advfirewall firewall set rule group="Network Discovery" new enable=Yes</CommandLine>
+                    <Description>Enable network discovery</Description>
+                </SynchronousCommand>
+
+                <!-- Enable File Sharing -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>7</Order>
+                    <CommandLine>netsh.exe advfirewall firewall set rule group="File and Printer Sharing" new enable=Yes</CommandLine>
+                    <Description>Enable file sharing</Description>
+                </SynchronousCommand>
+
+                <!-- Disable UAC Prompt -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>8</Order>
+                    <CommandLine>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f</CommandLine>
+                    <Description>Disable UAC prompt</Description>
+                </SynchronousCommand>
+
+                <!-- Show File Extensions -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>9</Order>
+                    <CommandLine>reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v HideFileExt /t REG_DWORD /d 0 /f</CommandLine>
+                    <Description>Show file extensions</Description>
+                </SynchronousCommand>
+
+                <!-- Set Power Plan to High Performance -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>10</Order>
+                    <CommandLine>powercfg.exe /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</CommandLine>
+                    <Description>Set high performance power plan</Description>
+                </SynchronousCommand>
+
+                <!-- Disable Windows Update Auto Download -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>11</Order>
+                    <CommandLine>reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f</CommandLine>
+                    <Description>Disable auto Windows Update</Description>
+                </SynchronousCommand>
+
+                <!-- Enable RemoteApp -->
+                <SynchronousCommand wcm:action="add">
+                    <Order>12</Order>
+                    <CommandLine>reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v fAllowUnlistedRemotePrograms /t REG_DWORD /d 1 /f</CommandLine>
+                    <Description>Enable RemoteApp</Description>
+                </SynchronousCommand>
+            </FirstLogonCommands>
+        </component>
+    </settings>
+</unattend>
