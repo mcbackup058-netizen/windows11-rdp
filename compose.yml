@@ -1,0 +1,41 @@
+# Windows 11 Pro - RDP Only Edition
+# Access via RDP client (mstsc, FreeRDP, Microsoft Remote Desktop)
+
+services:
+  windows11-rdp:
+    build: .
+    image: windows11-rdp:latest
+    container_name: windows11-rdp
+    environment:
+      # Windows 11 Pro is hardcoded, but you can override:
+      # USERNAME: custom username (default: Docker)
+      # PASSWORD: custom password (default: admin)
+      # RAM_SIZE: memory allocation (default: 4G)
+      # CPU_CORES: CPU cores (default: 2)
+      # DISK_SIZE: disk size (default: 64G)
+      RAM_SIZE: "4G"
+      CPU_CORES: "2"
+      DISK_SIZE: "64G"
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      # RDP Port Only - No Web Viewer
+      - "3389:3389/tcp"
+      - "3389:3389/udp"
+    volumes:
+      - ./storage:/storage
+    restart: unless-stopped
+    stop_grace_period: 2m
+
+# How to connect:
+# 1. Wait for Windows to install (check logs: docker logs windows11-rdp)
+# 2. Connect using RDP client:
+#    - Windows: mstsc
+#    - Linux: xfreerdp /v:localhost /u:Docker /p:admin
+#    - macOS: Microsoft Remote Desktop from App Store
+#    - Address: localhost:3389
+#    - Username: Docker
+#    - Password: admin

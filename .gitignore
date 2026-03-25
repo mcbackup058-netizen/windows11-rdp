@@ -1,0 +1,23 @@
+# Storage directory
+storage/
+
+# Temporary files
+*.tmp
+*.log
+*.iso
+
+# Docker
+.docker/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker Compose override
+docker-compose.override.yml
